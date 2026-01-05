@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - NP Automobile</title>
+    <link rel="icon" type="image/png" href="np-removebg-preview.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    
+
+    <!-- Enhanced Car Details Modal -->
+    <div id="car-details-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Car Details</h3>
+                <button class="close-modal" onclick="closeCarDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body modal-content-dynamic">
+                <!-- Content will be loaded here by JavaScript -->
+                <div class="modal-loader"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Admin Login Section -->
+    <section class="admin-login-section" id="adminLoginSection">
+        <div class="admin-login-container">
+            <div class="admin-login-card">
+                <div class="login-header">
+                    <i class="fas fa-user-shield"></i>
+                    <h1>Admin Login</h1>
+                    <p>Access the NP Automobile dashboard</p>
+                </div>
+                <form class="login-form" id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="adminEmail">Email Address</label>
+                        <input type="email" id="adminEmail" class="form-control" placeholder="example@gmail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </button>
+                    <div class="login-error" id="loginError"></div>
+                </form>
+                <div class="login-footer">
+                    <a href="index.html" class="back-to-home">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div>
+            <div class="loading-spinner"></div>
+            <div class="loading-text" id="loadingText">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <section class="admin-dashboard" id="adminDashboard" style="display: none;">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="container">
+                <nav class="admin-navbar">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <a href="admin.html" class="logo">
+                        <i class="fa-solid fa-circle-user"></i>
+                        <span class="logo-text" style="color: var(--primary);">NP Automobile<span>
+                    </a>
+
+                    <div class="admin-nav-links">
+                        <!-- Session Timer -->
+                        <div class="session-timer" id="sessionTimerDisplay" style="display: none;">
+                            <i class="fas fa-clock"></i>
+                            <span id="sessionTimeRemaining">60:00</span>
+                            <button id="resetSessionBtn" class="btn-reset" title="Reset Session"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                         <!-- View Switcher -->
+                <div class="view-switcher">
+                    <button class="btn btn-primary" id="navCarsBtn" onclick="switchView('cars')">
+                        <i class="fas fa-home"></i> <span class="nav-btn-text">Inventory</span>
+                    </button>
+                    <button class="btn btn-secondary" id="navMessagesBtn" onclick="switchView('messages')">
+                        <i class="fas fa-envelope"></i> <span class="nav-btn-text">Messages</span>
+                        <span class="notification-dot" id="messagesBadge"></span>
+                    </button>
+                </div>
+                        
+                        <span class="admin-welcome" style="color: var(--primary);">Welcome, Admin</span>
+                        <button class="btn btn-secondary" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="logout-text" style="color: var(--primary);">Logout</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Mobile Sidebar Menu -->
+        <div class="mobile-sidebar" id="mobileSidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo" onclick="closeMobileMenu(); return false;">
+                    <i class="fa-solid fa-circle-user"></i>
+                    <span class="logo-text" style="color: var(--primary);">NP Automobile</span>
+                </a>
+                <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">&times;</button>
+            </div>
+            <div class="sidebar-content">
+                <button class="sidebar-item" data-view="all">
+                    <i class="fas fa-list"></i> All Cars
+                </button>
+                <button class="sidebar-item" data-view="available">
+                    <i class="fas fa-circle"></i> Available
+                </button>
+                <button class="sidebar-item" data-view="sold">
+                    <i class="fas fa-check"></i> Sold
+                </button>
+                <hr>
+                <button class="sidebar-item" id="addCarBtnMobile">
+                    <i class="fas fa-plus"></i> Add New Car
+                </button>
+            </div>
+        </div>
+        <div class="mobile-sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Dashboard Content -->
+        <div class="admin-content">
+            <div class="container">
+                <!-- Dashboard Skeleton Loader -->
+                <div id="dashboardSkeleton" style="display: none;">
+                    <div class="dashboard-header skeleton-text" style="width: 250px; height: 40px; margin-bottom: 2rem; background: rgba(255,255,255,0.05); border-radius: 8px;"></div>
+                    
+                    <div class="stats-overview">
+                        <div class="stat-card skeleton-pulse" style="height: 120px;"></div>
+                        <div class="stat-card skeleton-pulse" style="height: 120px;"></div>
+                        <div class="stat-card skeleton-pulse" style="height: 120px;"></div>
+                        <div class="stat-card skeleton-pulse" style="height: 120px;"></div>
+                        <div class="stat-card skeleton-pulse inventory-value-card" style="height: 120px;"></div>
+                        <div class="stat-card skeleton-pulse" style="height: 120px;"></div>
+                        <div class="stat-card skeleton-pulse" style="height: 120px;"></div>
+                    </div>
+
+                    <div class="dashboard-section" style="margin-top: 2rem;">
+                        <div class="chart-container skeleton-pulse" style="height: 400px;"></div>
+                    </div>
+
+                    <div class="admin-table-container skeleton-pulse" style="height: 500px; margin-top: 2rem;"></div>
+                </div>
+
+                <div id="carsView">
+                <div class="dashboard-header" style="    text-align: center;">
+                    <h1><i class="fas fa-chart-line"></i> <span>Admin Dashboard</span></h1>
+                    <p>Real-time inventory & analytics</p>
+                </div>
+
+                <!-- Real-time Stats Overview -->
+                <div class="stats-overview">
+                    <div class="stat-card gradient-blue">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="totalCars">0</div>
+                            <div class="stat-label">Total Cars</div>
+                            <div class="stat-change">Updated live</div>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-green">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="availableCars">0</div>
+                            <div class="stat-label">Available</div>
+                            <div class="stat-change">Ready for sale</div>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-red">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="soldCars">0</div>
+                            <div class="stat-label">Sold</div>
+                            <div class="stat-change">Completed sales</div>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-purple">
+                        <div class="stat-icon">
+                            <i class="fas fa-mouse"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="detailsClicks">0</div>
+                            <div class="stat-label">Details Clicks</div>
+                            <div class="stat-change">Today</div>
+                        </div>
+                    </div>
+                        <div class="stat-card gradient-teal inventory-value-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="inventoryValue">₦0</div>
+                            <div class="stat-label">Inventory Value</div>
+                            <div class="stat-change">Total asset value</div>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-orange">
+                        <div class="stat-icon">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="averageInventoryAge">0 Days</div>
+                            <div class="stat-label">Avg. Inventory Age</div>
+                            <div class="stat-change">For available cars</div>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-pink">
+                        <div class="stat-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="unreadMessagesCount">0</div>
+                            <div class="stat-label">Recent Messages</div>
+                            <div class="stat-change" id="unreadMessagesText">Unread inquiries</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Replace the existing Clicks Over Time Chart section -->
+<div class="dashboard-section">
+    <div class="chart-container">
+        <div class="section-header">
+            <h3 class="chart-title">
+                <i class="fas fa-chart-line"></i>
+                Clicks Over Time
+            </h3>
+            <div class="time-range-selector">
+                <button class="time-range-btn active" data-range="7d">7 Days</button>
+                <button class="time-range-btn" data-range="30d">30 Days</button>
+                <button class="time-range-btn" data-range="90d">90 Days</button>
+                <button class="time-range-btn" data-range="1y">1 Year</button>
+            </div>
+        </div>
+        
+        <div class="chart-wrapper">
+            <canvas id="clicksOverTimeChart"></canvas>
+        </div>
+        
+        <div class="chart-legend">
+            <div class="legend-item">
+                <div class="legend-color details"></div>
+                <span>Details Clicks</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color buy"></div>
+                <span>Buy Clicks</span>
+            </div>
+        </div>
+        
+        <div class="data-refresh">
+            <div class="refresh-indicator"></div>
+            <span id="lastUpdateTime" style="color: var(--primary);">Updated just now</span>
+        </div>
+    </div>
+</div>
+
+                <!-- Actions Bar -->
+                <div class="actions-bar">
+                    <div class="actions-left">
+                        <button class="btn btn-primary" id="addCarBtn">
+                            <i class="fas fa-plus"></i>
+                            <span class="btn-text">Add New Car</span>
+                        </button>
+                        <div class="search-box" style="margin-left: 1rem;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="carSearch" placeholder="Search cars...">
+                        </div>
+                    </div>
+                    <div class="view-options">
+                        <button class="btn btn-secondary active" data-view="all">
+                            <i class="fas fa-list"></i> <span class="view-text">All</span>
+                        </button>
+                        <button class="btn btn-secondary" data-view="available">
+                            <i class="fas fa-circle"></i> <span class="view-text">Available</span>
+                        </button>
+                        <button class="btn btn-secondary" data-view="sold">
+                            <i class="fas fa-check"></i> <span class="view-text">Sold</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cars Table Container -->
+                <div class="admin-table-container">
+                    <div class="table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="selectAll">
+                                    </th>
+                                    <th>Image</th>
+                                    <th>Make & Model</th>
+                                    <th>Year</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th class="mobile-hidden">Details Clicks</th>
+                                    <th class="mobile-hidden">Buy Clicks</th>
+                                    <th>Date Added</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminCarsTable">
+                                <!-- Cars will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="loading" id="adminLoading">
+                        <div class="spinner"></div>
+                        <p>Loading cars...</p>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions -->
+                <div class="bulk-actions" id="bulkActions" style="display: none;">
+                    <span id="selectedCount">0 items selected</span>
+                    <button class="btn btn-secondary" id="bulkDelete">
+                        <i class="fas fa-trash"></i> Delete Selected
+                    </button>
+                    <button class="btn btn-secondary" id="bulkStatus">
+                        <i class="fas fa-sync"></i> Change Status
+                    </button>
+                </div>
+                </div> <!-- End carsView -->
+
+                <!-- Messages View -->
+                <div id="messagesView" style="display: none;">
+                    <div class="dashboard-header">
+                        <h1><i class="fas fa-envelope"></i> <span>Messages</span></h1>
+                        <p>Customer inquiries and contact requests</p>
+                    </div>
+                    
+                    <div class="admin-table-container">
+                        <div class="table-wrapper">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Name</th>
+                                        <th>Subject</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="messagesTableBody">
+                                    <!-- Messages will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="loading" id="messagesLoading" style="display: none;"><div class="spinner"></div> Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirmationTitle">Confirm Action</h3>
+                <button class="close-modal" id="closeConfirmationModal">&times;</button>
+            </div>
+            <div class="modal-body confirmation-body">
+                <p id="confirmationMessage">Are you sure you want to proceed?</p>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelConfirmationBtn">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmActionBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Details Modal -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Message Details</h3>
+                <button class="close-modal" id="closeMessageModal">&times;</button>
+            </div>
+            <div class="modal-body" style="background: var(--card); color: var(--text);">
+                <div class="message-details-content">
+                    <div style="margin-bottom: 15px;">
+                        <strong>From:</strong> <span id="msgName"></span> (<span id="msgEmail"></span>)
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Phone:</strong> <span id="msgPhone"></span>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Subject:</strong> <span id="msgSubject"></span>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Date:</strong> <span id="msgDate"></span>
+                    </div>
+                    <hr style="margin: 15px 0; border-color: var(--border);">
+                    <div style="margin-bottom: 15px;">
+                        <strong>Message:</strong>
+                        <p id="msgBody" style="margin-top: 10px; white-space: pre-wrap; background: var(--background); padding: 15px; border-radius: 8px;"></p>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <a href="#" id="msgReplyBtn" class="btn btn-primary" target="_blank"><i class="fas fa-reply"></i> Reply via Email</a>
+                    <button type="button" class="btn btn-secondary" id="msgCloseBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Add/Edit Car Modal -->
+    <div class="modal car-form-modal" id="carFormModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="carFormTitle">Add New Car</h3>
+                <button class="close-modal" id="closeCarFormModal">&times;</button>
+            </div>
+            <div class="modal-body car-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="carMake">Make *</label>
+                        <input type="text" id="carMake" class="form-control" placeholder="e.g. Toyota" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carModel">Model *</label>
+                        <input type="text" id="carModel" class="form-control" placeholder="e.g. Camry" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="carYear">Year *</label>
+                        <input type="number" id="carYear" class="form-control" placeholder="2025" min="1990" max="2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carPrice">Price (₦) *</label>
+                        <div class="price-input-wrapper">
+                            <span class="price-currency">₦</span>
+                            <input type="text" id="carPrice" class="form-control price-input" placeholder="e.g. 2,500,000" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="carCategory">Category *</label>
+                        <select id="carCategory" class="form-control" required>
+                            <option value="Sedan">Sedan</option>
+                            <option value="SUV">SUV</option>
+                            <option value="Truck">Truck</option>
+                            <option value="Coupe">Coupe</option>
+                            <option value="Convertible">Convertible</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="carFuelType">Fuel Type *</label>
+                        <select id="carFuelType" class="form-control" required>
+                            <option value="Gasoline">Gasoline</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="carTransmission">Transmission *</label>
+                        <select id="carTransmission" class="form-control" required>
+                            <option value="Automatic">Automatic</option>
+                            <option value="Manual">Manual</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="carMileage">Mileage *</label>
+                        <input type="number" id="carMileage" class="form-control" placeholder="50000" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="carSeats">Seats *</label>
+                        <input type="number" id="carSeats" class="form-control" placeholder="5" min="2" max="9" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carStatus">Status *</label>
+                        <select id="carStatus" class="form-control" required>
+                            <option value="available">Available</option>
+                            <option value="sold">Sold</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="carDescription">Description</label>
+                    <textarea id="carDescription" class="form-control" rows="4" placeholder="Describe the car..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="carFeatures">Features (comma separated)</label>
+                    <input type="text" id="carFeatures" class="form-control" placeholder="e.g. Sunroof, Leather Seats, Navigation">
+                </div>
+                <div class="form-group">
+                    <label>Car Images *</label>
+                    <div class="image-upload" id="imageUploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload images or drag and drop</p>
+                        <p class="upload-hint">PNG, JPG up to 5MB each</p>
+                    </div>
+                    <input type="file" id="carImages" multiple accept="image/*" style="display: none;">
+                    <div class="uploaded-images" id="uploadedImages">
+                        <!-- Uploaded images will be displayed here -->
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary save" id="saveCarBtn">
+                        <i class="fas fa-save"></i>
+                        Save Car
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelCarForm">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTopBtn" class="back-to-top" aria-label="Back to top" style="display: none;">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Quick Add FAB (Mobile Only) -->
+    <button id="fabAddCarBtn" class="fab-btn" aria-label="Quick Add Car" style="display: none;">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-init.js"></script>
+    <script src="main.js"></script>
+    <script src="auth.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

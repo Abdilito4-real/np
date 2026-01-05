@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0ea5a4">
+   <!-- Inventory Page Meta Tags -->
+<title>Car Inventory | Browse Quality Used Cars | NP Automobile</title>
+<meta name="description" content="Browse our extensive inventory of quality used cars, SUVs, trucks, and luxury vehicles. Filter by make, model, price, and features to find your perfect car.">
+<meta name="keywords" content="car inventory, used cars, SUV for sale, trucks, luxury cars, car search, filter cars, vehicle selection">
+
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+
+    <!-- Business/Organization Schema -->
+    <meta itemprop="name" content="NP Automobile">
+    <meta itemprop="description" content="Premium used car dealership offering quality vehicles and exceptional customer service.">
+    <meta itemprop="image" content="https://npAutomobile.com/logo.png">
+
+    <!-- Social Media Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NP Automobile | Premium Car Dealership">
+    <meta name="twitter:description" content="Quality used cars, luxury vehicles, and certified pre-owned cars at competitive prices.">
+    <meta name="twitter:image" content="https://npAutomobile.com/social-preview.jpg">
+    <meta property="og:site_name" content="NP Automobile">
+    <meta property="og:image" content="https://npAutomobile.com/social-preview.jpg">
+    <link rel="canonical" href="https://npAutomobile.com/cars.html">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+ <link rel="icon" type="image/png" href="np-removebg-preview.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">
+                    <!-- use CSS-controlled class instead of inline width -->
+                    <img src="np-removebg-preview.png" alt="NP Autos" class="logo-img">
+                    <span class="logo-NP">NP</span>
+                    <span class="logo-autos">Automobile</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="cars.html" class="active">Cars</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Browse Our Collection</h1>
+            <p>Discover our extensive selection of premium vehicles</p>
+        </div>
+    </section>
+
+    <!-- Search and Filter Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search by make, model, or year...">
+                </div>
+                <button class="filter-btn" id="filterToggle">
+                    <i class="fas fa-filter"></i>
+                    Filters
+                </button>
+            </div>
+            <div class="filters" id="filters">
+                <div class="filter-group">
+                    <label for="brandFilter">Brand</label>
+                    <select id="brandFilter">
+                        <option value="">All Brands</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="categoryFilter">Category</label>
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="Sedan">Sedan</option>
+                        <option value="SUV">SUV</option>
+                        <option value="Truck">Truck</option>
+                        <option value="Coupe">Coupe</option>
+                        <option value="Convertible">Convertible</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="priceMin">Min Price</label>
+                    <input type="number" id="priceMin" placeholder="$0">
+                </div>
+                <div class="filter-group">
+                    <label for="priceMax">Max Price</label>
+                    <input type="number" id="priceMax" placeholder="$100,000">
+                </div>
+                <div class="filter-group">
+                    <label for="yearMin">Min Year</label>
+                    <input type="number" id="yearMin" placeholder="2000" min="1990" max="2023">
+                </div>
+                <div class="filter-group">
+                    <label for="yearMax">Max Year</label>
+                    <input type="number" id="yearMax" placeholder="2023" min="1990" max="2023">
+                </div>
+                <div class="filter-group">
+                    <label for="fuelType">Fuel Type</label>
+                    <select id="fuelType">
+                        <option value="">All Types</option>
+                        <option value="Gasoline">Gasoline</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="Electric">Electric</option>
+                        <option value="Hybrid">Hybrid</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="transmission">Transmission</label>
+                    <select id="transmission">
+                        <option value="">All Types</option>
+                        <option value="Automatic">Automatic</option>
+                        <option value="Manual">Manual</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <button class="btn btn-secondary" id="resetFilters">Reset Filters</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cars Section -->
+    <section class="cars-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Available Cars</h2>
+                <div class="results-count" id="resultsCount"></div>
+                <div class="view-toggle">
+                    <button class="active" id="gridView"><i class="fas fa-th"></i></button>
+                    <button id="listView"><i class="fas fa-list"></i></button>
+                </div>
+            </div>
+            <div class="cars-grid" id="carsContainer">
+                <!-- Cars will be loaded here dynamically -->
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading cars...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>NP Automobile</h3>
+                    <p>Your trusted partner for buying premium quality cars. We offer the best selection of vehicles with transparent pricing.</p>
+                    <div class="social-links">
+                        <a href="https://wa.me/2348141984899" target="_blank" class="whatsapp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://instagram.com/np_automobile1" target="_blank" class="instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="mailto:ahmadahmadtijjani12@gmail.com" class="gmail" aria-label="Gmail"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="cars.html">Browse Cars</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i>  NO 3 College road, Close to 44 Hospital Kaduna</li>
+                        <li><i class="fas fa-phone"></i>08141984899 - 09160608500</li>
+                        <li><i class="fas fa-envelope"></i> ahmadahmadtijjani12@gmail.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 9am-6pm</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 NP Automobile. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+        <ul class="mobile-nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+            <li><a href="cars.html" class="active"><i class="fas fa-car"></i><span>Cars</span></a></li>
+            <li><a href="about.html"><i class="fas fa-info-circle"></i><span>About</span></a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Car Details Modal -->
+    <div class="modal" id="carDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="carModalTitle">Car Details</h3>
+                <button class="close-modal" id="closeCarModal">&times;</button>
+            </div>
+            <div class="modal-body" id="carModalBody">
+                <!-- Car details will be loaded here dynamically -->
+            </div>
+        </div>
+    </div>
+
+
+
+     <!-- Back to Top Button -->
+    <button id="backToTopBtn" class="back-to-top" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-init.js"></script>
+    <script src="main.js"></script>
+    <script src="cars.js"></script>
+</body>
+</html>
